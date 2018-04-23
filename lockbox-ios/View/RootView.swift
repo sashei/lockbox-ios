@@ -117,7 +117,6 @@ class RootView: UIViewController, RootViewProtocol {
             settingNavController?.pushViewController(
                 SettingWebView(url: Constant.app.provideFeedbackURL,
                                 title: Constant.string.settingsProvideFeedback), animated: true)
-        default: break
         }
     }
 

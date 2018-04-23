@@ -145,11 +145,20 @@ class RootViewSpec: QuickSpec {
                 }
             }
 
-            xdescribe("pushing settings views") {
+            describe("pushing settings views") {
+                beforeEach {
+                    self.subject.startMainStack(MainNavigationController.self)
+
+                    expect(self.subject.mainStackIs(MainNavigationController.self)).toEventually(beTrue())
+                    self.subject.startModalStack(SettingNavigationController.self)
+                }
+
+                afterEach {
+                    self.subject.pushMainView(view: .list)
+                }
+
                 describe("list") {
                     beforeEach {
-                        self.subject.startMainStack(MainNavigationController.self)
-                        self.subject.startModalStack(SettingNavigationController.self)
                         self.subject.pushSettingView(view: .list)
                     }
 
@@ -160,8 +169,6 @@ class RootViewSpec: QuickSpec {
 
                 describe("account") {
                     beforeEach {
-                        self.subject.startMainStack(MainNavigationController.self)
-                        self.subject.startModalStack(SettingNavigationController.self)
                         self.subject.pushSettingView(view: .account)
                     }
 
@@ -172,8 +179,6 @@ class RootViewSpec: QuickSpec {
 
                 describe("autolock") {
                     beforeEach {
-                        self.subject.startMainStack(MainNavigationController.self)
-                        self.subject.startModalStack(SettingNavigationController.self)
                         self.subject.pushSettingView(view: .autoLock)
                     }
 
@@ -182,54 +187,23 @@ class RootViewSpec: QuickSpec {
                     }
                 }
 
-                describe("web view settings") {
+                describe("provide feedback") {
                     beforeEach {
-                        self.subject.startMainStack(MainNavigationController.self)
-                        self.subject.startModalStack(SettingNavigationController.self)
+                        self.subject.pushSettingView(view: .provideFeedback)
                     }
 
-                    describe("faq") {
-                        beforeEach {
-                            self.subject.pushSettingView(view: .faq)
-                        }
-
-                        it("makes the web view the top view of the modal stack") {
-                            expect(self.subject.modalViewIs(SettingWebView.self)).toEventually(beTrue(), timeout: 20)
-                        }
-                    }
-
-                    describe("provide feedback") {
-                        beforeEach {
-                            self.subject.pushSettingView(view: .provideFeedback)
-                        }
-
-                        it("makes the web view the top view of the modal stack") {
-                            expect(self.subject.modalViewIs(SettingWebView.self)).toEventually(beTrue(), timeout: 20)
-                        }
+                    it("makes the web view the top view of the modal stack") {
+                        expect(self.subject.modalViewIs(SettingWebView.self)).toEventually(beTrue(), timeout: 20)
                     }
                 }
 
                 describe("faq") {
                     beforeEach {
-                        self.subject.startMainStack(MainNavigationController.self)
-                        self.subject.startModalStack(SettingNavigationController.self)
                         self.subject.pushSettingView(view: .faq)
                     }
 
                     it("makes the faq view the top view of the modal stack") {
                         expect(self.subject.modalViewIs(SettingWebView.self)).toEventually(beTrue(), timeout: 20)
-                    }
-                }
-
-                describe("any other setting view") {
-                    beforeEach {
-                        self.subject.startMainStack(MainNavigationController.self)
-                        self.subject.startModalStack(SettingNavigationController.self)
-                        self.subject.pushSettingView(view: .enableInBrowser)
-                    }
-
-                    it("stays on the list") {
-                        expect(self.subject.modalViewIs(SettingListView.self)).to(beTrue())
                     }
                 }
             }
